@@ -3,6 +3,6 @@
 Implement an allocator and deallocator similar to `malloc` and `free`.
 
 Requires:
-* Knowledge of `brk(2)` and `sbrk(2)`
+* Knowledge of `brk(2)`, `sbrk(2)`, and `mmap(2)`.
 * A good hash map implementation.
-* a good design.
+* A good design.
