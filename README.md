@@ -15,3 +15,8 @@ struct chunk_meta {
   struct list_node blocks; /* list of blocks */
 };
 ```
+
+Implementations:
+* `brk_alloc`
+* `mmap_alloc`
+* `mixed_alloc`
