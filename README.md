@@ -8,10 +8,13 @@ Requires:
 * A good design.
 
 ```c
-struct chunk_meta {
+struct block_info {
   void * ptr;              /* pointer to beginning of chunk */
-  size_t length;           /* number of bytes allocated */ 
-  size_t used;             /* number of bytes used */
+  size_t length;           /* number of bytes allocated - sizeof(struct block_info) */
+  enum { 
+    SBRK, 
+    MMAP 
+  } syscall_used;          /* how the memory was requested */
   struct list_node blocks; /* list of blocks */
 };
 ```
@@ -20,3 +23,7 @@ Implementations:
 * `brk_alloc`
 * `mmap_alloc`
 * `mixed_alloc`
+
+Advanced Requirements
+* Small chunks should not cross page boundaries.
+* Large chunks should be ...
