@@ -9,6 +9,22 @@ This repository contains the skeleton code for the `csx730-malloc` project
 assigned to the students in the Spring 2019 CSCI 4730/6730 class
 at the University of Georgia.
 
+## Table of Contents
+
+1. [Academic Honesty]()
+1. [Memory Allocation]()
+   1. [The User API]()
+   1. [The Developer API]()
+   1. [How to Manage your Heap]()
+   1. [Block Metadata]()
+   1. [Examples]()
+1. [How to Get the Skeleton Code]()
+1. [Project Requirements]()
+   1. [Functional Requirements]()
+   1. [6730 Requirements]()
+   1. [Non-Functional Requirements]()
+1. [Submission Instructions]()
+
 ## Academic Honesty
 
 You agree to the Academic Honesty policy as outlined in the course syllabus. 
@@ -24,35 +40,19 @@ notice and licensing information at the bottom of this document.
 The heap or free store is the memory area of a process reserved by dynamic allocation.
 In most C programs, this area is managed by `malloc(3)` and `free(3)`. 
 
-
-
 In this project, you are tasked with implementing the `malloc(3)` family of functions
 in C using a non-crpytographic block chain! Some starter code is provided. 
 Other project details are provided below.
 
-## Useful References
+### The User API
 
-* [C Typedef Declaration](https://en.cppreference.com/w/c/language/typedef)
-* [`mmap(2)`](http://man7.org/linux/man-pages/man2/mmap.2.html)
-* [`setitimer(2)`](http://man7.org/linux/man-pages/man2/getitimer.2.html)
-* [`sigaction(2)`](http://man7.org/linux/man-pages/man2/sigaction.2.html)
-* [`sigprocmask(2)`](http://man7.org/linux/man-pages/man2/sigprocmask.2.html)
-* [`setjmp(3)`](http://man7.org/linux/man-pages/man3/setjmp.3.html)
-* [`longjmp(3)`](http://man7.org/linux/man-pages/man3/longjmp.3.html)
+### The Developer API
 
-## The User API
+### How to Manage your Heap 
 
-## The Developer API
+### Block Metadata  
 
-## How to Manage your Heap 
-
-## Block Metadata  
-
-## Where can I store Extra Information about a Thread?
-
-## Planning it Out
-
-## Sample Output
+### Examples
 
 ## How to Get the Skeleton Code
 
