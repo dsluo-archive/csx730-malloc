@@ -39,12 +39,27 @@ notice and licensing information at the bottom of this document.
 
 The heap or free store is the memory area of a process reserved by dynamic allocation.
 In most C programs, this area is managed by `malloc(3)` and `free(3)`. 
-
 In this project, you are tasked with implementing the `malloc(3)` family of functions
-in C using a non-crpytographic block chain! Some starter code is provided. 
+in C using a non-crpytographic block chain! Essentially, your code will be in charge
+of managing the process's heap. Mixing your implementation with GLIBC's `malloc(3)`
+and `free(3)` is undefined. Some starter code is provided. 
 Other project details are provided below.
 
 ### The User API
+
+The primary User API provides two functions:
+
+* __`void * csx730_malloc(size_t size);`__<br>
+  Allocates `size` bytes and returns a pointer to the allocated memory. The memory is not cleared.
+  If `size` is `0`, then `csx730_malloc` returns either `NULL`, or a unique pointer value that 
+  can later be successfully passed to the `csx730_free` function.
+  
+  
+* __`void csx730_free(void * ptr);`__<br>
+  Frees the memory space pointed to by `ptr`, which must have been returned by a previous call to
+  the `csx730_malloc`, `csx730_calloc`, or `csx730_realloc` function. If `ptr` is `NULL`, then
+  no operation is performed. If `csx730_free(ptr)` has already been called, then the behavior is
+  undefined.
 
 ### The Developer API
 
@@ -65,7 +80,7 @@ $ git clone https://github.com/cs1730/csx730-malloc.git
 
 This should create a directory called `csx730-malloc` in your present working directory that
 contains the project files. For this project, the only files that are included with the project
-download are listed near the top of the page [here](https://github.com/cs1730/csx730-uthread).
+download are listed near the top of the page [here](https://github.com/cs1730/csx730-malloc).
 
 Here is a table that briely outlines each file in the skeleton code:
 
@@ -78,7 +93,7 @@ Here is a table that briely outlines each file in the skeleton code:
 | `csx730_malloc.c`         | Where you will put most of your implementation.                  |
 | `csx730_malloc.h`         | Thread structures, function prototypes, and macros.              |
 
-If any updates to the project files are announced by your instructor, you can
+If any updates to the project files are announced by your instructor, then you can
 merge those changes into your copy by changing into your project directory
 on Nike and issuing the following terminal command:
 
@@ -92,7 +107,7 @@ your instructor via Piazza.
 ## Project Requirements
 
 This assignment is worth 100 points. The lowest possible grade is 0, and the 
-highest possible grade is 115 (if you are enrolled in CSCI 4730).
+highest possible grade is 120 (if you are enrolled in CSCI 4730).
 
 ### Functional Requirements
 
