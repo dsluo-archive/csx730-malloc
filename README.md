@@ -52,8 +52,10 @@ The primary User API provides two functions:
 * __`void * csx730_malloc(size_t size);`__<br>
   Allocates `size` bytes and returns a pointer to the allocated memory. The memory is not cleared.
   If `size` is `0`, then `csx730_malloc` returns either `NULL`, or a unique pointer value that 
-  can later be successfully passed to the `csx730_free` function.
-  
+  can later be successfully passed to the `csx730_free` function. On failure, returns a `NULL` 
+  pointer. **NOTE:** Unlike `malloc(3)`, the underlying memory block is _not required_ to be 
+  suitably aligned for any object type with 
+  [fundamental alignment](https://en.cppreference.com/w/c/language/object#Alignment). 
   
 * __`void csx730_free(void * ptr);`__<br>
   Frees the memory space pointed to by `ptr`, which must have been returned by a previous call to
@@ -63,11 +65,107 @@ The primary User API provides two functions:
 
 ### The Developer API
 
+The Developer API provides three functions:
+
+* __`void csx730_pheapstats(void);`__<br>
+  TODO write.
+
+* __`void csx730_pheapmap(void);`__<br>
+  TODO write.
+  Examples are [provided below](#examples).
+  
 ### How to Manage your Heap 
 
 ### Block Metadata  
 
 ### Examples
+
+```
+print_heap_map()
+  ------------------
+P 0x00000000017dc000 original program break
+  ------------------
+P 0x00000000017dc000 program break
+```
+
+```
+malloc(32) = 0x17dc018 [append]
+print_heap_map()
+  ------------------
+P 0x00000000017dc000 original program break
+  ------------------
+P 0x00000000017dc000 used chunk
+  0x00000000017dc018 start (32 bytes)
+  0x00000000017dc038 end
+  ------------------
+  0x00000000017dc038 free chunk
+  0x00000000017dc050 start (4016 bytes)
+P 0x00000000017dd000 end
+  ------------------
+P 0x00000000017dd000 program break
+```
+
+```
+malloc(4048) = 0x17dd018 [append]
+print_heap_map()
+  ------------------
+P 0x00000000017dc000 original program break
+  ------------------
+P 0x00000000017dc000 used chunk
+  0x00000000017dc018 start (32 bytes)
+  0x00000000017dc038 end
+  ------------------
+  0x00000000017dc038 free chunk
+  0x00000000017dc050 start (4016 bytes)
+P 0x00000000017dd000 end
+  ------------------
+P 0x00000000017dd000 used chunk
+  0x00000000017dd018 start (4048 bytes)
+  0x00000000017ddfe8 end
+  ------------------
+  0x00000000017ddfe8 free chunk
+P 0x00000000017de000 start (0 bytes)
+P 0x00000000017de000 end
+  ------------------
+P 0x00000000017de000 program break
+```
+
+```
+malloc(16384) = 0x17de018 [append]
+print_heap_map()
+  ------------------
+P 0x00000000017dc000 original program break
+  ------------------
+P 0x00000000017dc000 used chunk
+  0x00000000017dc018 start (32 bytes)
+  0x00000000017dc038 end
+  ------------------
+  0x00000000017dc038 free chunk
+  0x00000000017dc050 start (4016 bytes)
+P 0x00000000017dd000 end
+  ------------------
+P 0x00000000017dd000 used chunk
+  0x00000000017dd018 start (4048 bytes)
+  0x00000000017ddfe8 end
+  ------------------
+  0x00000000017ddfe8 free chunk
+P 0x00000000017de000 start (0 bytes)
+P 0x00000000017de000 end
+  ------------------
+P 0x00000000017de000 used chunk
+  0x00000000017de018 start (16384 bytes)
+P 0x00000000017df000 
+P 0x00000000017e0000 
+P 0x00000000017e1000 
+P 0x00000000017e2000 
+  0x00000000017e2018 end
+  ------------------
+  0x00000000017e2018 free chunk
+  0x00000000017e2030 start (4048 bytes)
+P 0x00000000017e3000 end
+  ------------------
+P 0x00000000017e3000 program break
+```
 
 ## How to Get the Skeleton Code
 
