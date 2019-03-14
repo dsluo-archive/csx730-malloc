@@ -1,5 +1,5 @@
-#ifndef CSX730_ALLOC_H
-#define CSX730_ALLOC_H
+#ifndef CSX730_MALLOC_H
+#define CSX730_MALLOC_H
 
 /**
  * @file
@@ -84,5 +84,5 @@ void * csx730_realloc(void * ptr, size_t size);
 
 #endif // _CS6730_SOURCE
 
-#endif // CSX730_ALLOC_H
+#endif // CSX730_MALLOC_H
 
