@@ -12,29 +12,6 @@
  */
 
 /**
- * Represents a node in a doubly linked list.
- */
-struct csx730_list_node {
-  struct csx730_list_node * prev;
-  struct csx730_list_node * next;
-}; // csx730_list_node
-
-/**
- * 
- */
-struct csx730_block_info {
-  void * ptr;                      /**< pointer to beginning of block */
-  size_t size;                     /**< size of block, in bytes */
-  enum {
-	OCCUPIED,                  /**< block is being used */
-	EMPTY                      /**< block is not being used */
-  } status;                        /**< status of block */
-  struct csx730_list_node blocks;  /**< list of all blocks */
-  struct csx730_list_node free;    /**< list of free blocks */
-  void * extra_info;               /**< pointer to implementation-dependent struct with extra info */
-}; // csx730_block_info
-
-/**
  * Allocates @p size bytes and returns a pointer to the allocated memory. The memory is not cleared.
  * If @p size is @c 0, then @c csx730_malloc returns either @c NULL, or a unique pointer value that 
  * can later be successfully passed to the @c csx730_free function.
