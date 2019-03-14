@@ -3,16 +3,11 @@
 > The fibers of all things have their tension and are strained like the strings of an instrument.
 > __--Henry David Thoreau__
 
-**DUE FRI 2019-02-22 (Feb 22) @ 11:55 PM**
+**DUE FRI 2019-04-01 (Apr 01) @ 11:55 PM**
 
-This repository contains the skeleton code for the `csx730-uthreads` project
+This repository contains the skeleton code for the `csx730-malloc` project
 assigned to the students in the Spring 2019 CSCI 4730/6730 class
 at the University of Georgia.
-
-## Updates
-
-* __2019-02-06:__ Clarified the scheduler API requirements and updated the related prototypes and
-  corresponding documentation.
 
 ## Academic Honesty
 
@@ -24,36 +19,19 @@ the project publicly visible. Please follow the instructions contained in the
 order to do your development on Nike. Furthermore, you must adhere to the copyright
 notice and licensing information at the bottom of this document.
 
-## User Space Threads
+## Memory Allocation
 
-A thread of execution is the smallest sequence of programmed instructions that can be 
-managed independently by a scheduler. A __user-mode thread__ is one that is scheduled
-in user mode instead of kernel mode. In user mode,
-only a single thread can execute at a time. After some time, the current thread that
-is executing will be temporarily interrupted by some signal, the disposition of which
-should trigger a context switch to another thread without requiring either thread's 
-cooperation. The basic idea is that these context switches should occur so quickly that
-all threads appear to execute concurrently. Special care should be taken to block 
-signals during a context switch. 
+The heap or free store is the memory area of a process reserved by dynamic allocation.
+In most C programs, this area is managed by `malloc(3)` and `free(3)`. 
 
-Each thread gets its own stack that is separate from the stack of the calling process
-but somewhere within the process's virtual memory space. While this new stack space
-can be allocated using `malloc(3)`, use of `mmap(2)` is recommended as it guarantees
-the memory will be allocated at a nearby page boundary. You should 
-[actively avoid](https://lwn.net/Articles/294001/) use of the `MAP_GROWSDOWN` 
-flag when using `mmap(2)` for a stack. Instead simply treat the returned pointer to 
-the mapped area as the end of the stack, then add the stack size to compute the 
-initial stack pointer value.
 
-In this project, you are tasked with implementing a preemptive multitasking, user-mode 
-thread library in C and a little bit of x86 assembly! Some starter code is provided. 
+
+In this project, you are tasked with implementing the `malloc(3)` family of functions
+in C using a non-crpytographic block chain! Some starter code is provided. 
 Other project details are provided below.
 
 ## Useful References
 
-* [X86 Opcode and Instruction Reference](http://ref.x86asm.net)
-* [X86 64 Register and Instruction Quick Start](https://wiki.cdot.senecacollege.ca/wiki/X86_64_Register_and_Instruction_Quick_Start)
-* [GCC: How to Use Inline Assembly Language in C Code](https://gcc.gnu.org/onlinedocs/gcc/Using-Assembly-Language-with-C.html)
 * [C Typedef Declaration](https://en.cppreference.com/w/c/language/typedef)
 * [`mmap(2)`](http://man7.org/linux/man-pages/man2/mmap.2.html)
 * [`setitimer(2)`](http://man7.org/linux/man-pages/man2/getitimer.2.html)
@@ -62,74 +40,19 @@ Other project details are provided below.
 * [`setjmp(3)`](http://man7.org/linux/man-pages/man3/setjmp.3.html)
 * [`longjmp(3)`](http://man7.org/linux/man-pages/man3/longjmp.3.html)
 
-## How to Change the Stack Pointer
+## The User API
 
-You can easily move the stack pointer using 
-[Extended ASM](https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html#Extended-Asm) 
-in GCC. Assuming that compiler optimizations are disabled, the following example 
-should move the address stored in `rsptr` into the register for the stack pointer
-before calling a function called `some_func`:
+## The Developer API
 
-```c
-void * rsptr = some_address;  // some address
-__asm__("movq %0, %%rsp;"     // AssemblerTemplate
-	:                     // OutputOperands
-	: "r"(rsptr)          // InputOperands
-	: "rsp");             // Clobbers
-some_func();                  // function call on changed stack
-```
+## How to Manage your Heap 
 
-Please note that in some cases it may be favorable to move the actual function
-call into the `__asm__` block (or even an `__asm__ volatile` block), e.g., using
-the `callq` instruction, in order to prevent the compiler from changing the
-relative order of relevant instructions or from clobbering output operands 
-in-between assembly blocks. If the function you intend to run on
-the new stack requires arguments, then you may also need to manually move the 
-values into the argument registers before changing the stack pointer. 
-
-## How to Implement the Context Switch
-
-Unless you want/need to fulfill the **[SETJMP]** requirement, you may directly
-use `setjmp(3)` to save the excution context into a buffer and `longjmp(3)`
-to restore the execution context. The documentation for these functions may be
-hard to parse, but essentially `setjmp(3)` saves a copy of the neccesary CPU
-registers into a buffer, then directly returns `0`. Later, when `longjmp(3)`
-is executed with the buffer and some value, the registeres in the buffer get
-restored, a (presumably) lon-local jump (e.g., the x86 `jumpq` instruction) is
-performed and execution continues as if the corresponding call to `setjmp(3)`
-has just returned wit the supplied value.
-
-You may recall that the return value `fork(2)` can be used to determine if execution is occuring
-in the parent process or the child process. Similarly, the return value of `setjmp(3)` can be used
-to determine if the execution context has just been saved or restored. 
+## Block Metadata  
 
 ## Where can I store Extra Information about a Thread?
 
-Each `uthread` has a member called `extra` that can point to any location the implementor
-desires. A convenient way to keep extra information organized would be to use a `struct`.
-A convenient place to store an object of this structure is it at the end of the thread's
-allocated stack space. Since users of the library get to decide what each thread's stack
-size is, it's recomended that you _increase_ the amount of memory allocated by the size of
-your structure so that the user's desired stack size is honored.
-
 ## Planning it Out
 
-Upon creation of the first user-mode thread, the scheduler should be start and the
-thread added to its queue. This should also initiate an interval timer that sends a signal
-to the process. An interval of about 5,000 microseconds should suffice. The rest of
-the project boils down to careful _planning_. Drawing a state diagram before writing
-any code will help.
-
-You may find it useful to assign a thread for the calling process. This "main" thread does
-not need its own stack since it's supposed to represent the main execution of the process
-itself. This is just a suggestion--it's not a requirement, but it may simply some of your
-scheduling logic simpler.
-
-The interface for the functions in this project is intentionally similar to the one
-provided by Pthreads. To test your project, you might first try some simple programs 
-that use Pthreads, then try the same program using your project functions instead.
-Don't try to overcomplicate it. We really just want to make sure that you can give the
-illusion of parallelism via repeated user-mode context switches. 
+## Sample Output
 
 ## How to Get the Skeleton Code
 
@@ -137,10 +60,10 @@ On Nike, execute the following terminal command in order to download the project
 files into a subdirectory within your present working directory:
 
 ```
-$ git clone https://github.com/cs1730/csx730-uthread.git
+$ git clone https://github.com/cs1730/csx730-malloc.git
 ```
 
-This should create a directory called `csx730-uthread` in your present working directory that
+This should create a directory called `csx730-malloc` in your present working directory that
 contains the project files. For this project, the only files that are included with the project
 download are listed near the top of the page [here](https://github.com/cs1730/csx730-uthread).
 
@@ -152,9 +75,8 @@ Here is a table that briely outlines each file in the skeleton code:
 | `Makefile`                | Configuration file for `make`.                                   |
 | `README.md`               | This project description.                                        |
 | `SUBMISSION.md`           | Student submission information.                                  |
-| `csx730_uthread.c`        | Where you will put most of your thread implementation.           |
-| `csx730_uthread.h`        | Thread structures, function prototypes, and macros.              |
-| `setjmp/`                 | Subdirectory containing files for the **[SETJMP]** requirement.  |
+| `csx730_malloc.c`         | Where you will put most of your implementation.                  |
+| `csx730_malloc.h`         | Thread structures, function prototypes, and macros.              |
 
 If any updates to the project files are announced by your instructor, you can
 merge those changes into your copy by changing into your project directory
@@ -179,21 +101,22 @@ There will be no partial credit for any of the requirements that simply
 require the presence of a function related a particular functionality. 
 The actual functionality is tested using test cases.
 
-1. __(100 points) Implement `csx730_uthread.h` functions in `csx730_uthread.c`.__
+1. __(50 points) Project Compiles.__ Your submission compiles and can successfully
+   link with object files expecting the symbols defined in `csx730_malloc.h`. 
+   Please be aware that the __Build Compliance__ non-functional requirement still
+   applies.
+
+1. __(50 points) Implement `csx730_malloc.h` functions in `csx730_malloc.c`.__
    Each of the functions whose prototype appears in the header and does not require
-   the `_CS6760_SOURCE` feature test macro must  be implemented correctly in the
+   the `_CS6760_SOURCE` feature test macro must be implemented correctly in the
    corresponding `.c` file. Here is a list of the functions forming the public API:
 
-   * __(10 points)__ `void uthread_clear(uthread *);`
-   * __(20 points)__ `int uthread_create(uthread *, uthread_func *, uthread_arg, size_t);`
-   * __(20 points)__ `void uthread_exit(void);`
-   * __(20 points)__ `void uthread_join(uthread *);`
-   * __(10 points)__ `uthread * uthread_self(void);`
+   * __(10 points)__ `void * csx730_malloc(size_t size);`
+   * __(10 points)__ `void csx730_free(void * ptr);`
 
-   Here is a list of functions forming the (private) scheduler API:
+   Here is a list of functions forming the (private) developer API:
    
-   * __(10 points)__ `void _uthread_sched_enqueue(uthread *);`
-   * __(10 points)__ `uthread * _uthread_sched_dequeue(void);`
+   * __(30 points)__ `void csx730_pheap(void);`
 
    The documentation for each function is provided directly in
    the header. You may generate an HTML version of the corresponding
@@ -202,7 +125,8 @@ The actual functionality is tested using test cases.
    so will cause the tester used by the grader to fail.
 
    You are free,  _actively encouraged_, and will likely need to write other functions, as needed,
-   to support the required set of functions. 
+   to support the required set of functions. It is recommended that you give private function
+   names a `_csx730_` prefix. 
 
 ### 6730 Requirements
 
@@ -211,57 +135,12 @@ for students enrolled in CSCI 6730 and a functional requirement for students enr
 CSCI 4730. This effectively provides an extra credit opportunity to the undergraduate
 students and a non-compliance penalty for the graduate students.
 
-1. __(5 points) [PRIORITY] Implement `_CS6730_SOURCE` features__
-   The `_CS6730_SOURCE` feature test macro should enable the following set of features:
-   
-   * Individual thread priority.
-   * Priority queue scheduling.
-   * The `uthread_create_priority` function.
+1. __(20 points) [PRIORITY] Implement `_CS6730_SOURCE` features__
+   The `_CS6730_SOURCE` feature test macro should enable the following addtional 
+   functions to the public API:
 
-   Additionally, `_CS6760_SOURCE` also changes the default behavior of the `uthread_create`
-   function to default user-mode thread's priority to `UTHREAD_PRIORITY_NORMAL`.
-   Students are expected to implement a priority queue using a max heap to satisfy the
-   scheduling requirement.
-   
-1. __(10 points) [SETJMP] Implement the context switch without using `setjmp(3)` and `longjmp(3)`.__
-   Without `setjmp(3)` and `longjmp(3)`, this task may seem daunting. Don't worry! You
-   simply need to write the assembly to save and restore the CPU registers. While this could
-   be done using an `__asm__` block, it's a lot cleaner to just write a dedicated `.s` file
-   containing the necesary assembly. You will need to do the following for this requirement:
-
-   * Move the files in the `setjmp` directory directly into the `csx730-uthread` directory.
-   * Inspect and read `csx730_uthread_setjmp.h`.
-   * Implement `_uthread_save` and `_uthread_restore` in `csx730_uthread_setjmp.s`.
-   * In `csx730_uthread.c`, replace all instances of `setjmp(3)` with `_uthread_save` and
-      all instances of `longjmp(3)` with `_uthread_restore`.
-   * Use the alternative makefile:
-
-     ```
-     $ make -f Makefile-setjmp
-     ```
-
-   While you could combine C and assembly, as was seen in how to change the stack pointer, this
-   requirement forces you to write the assembly directly in a `.s` file.   
-   To simulate `setjmp(3)`, save the values of the relevant registers. 
-   To simulate `longjmp(3)`, restore the register values, then return to the previously 
-   saved environment by setting the stack pointer and manually returning. 
-
-   At a minimum, the following 64 bit registers should be saved on an `x86` machine, as
-   they are registers that called routines are expected to preserve:
-   
-   | Register | Description            |
-   |----------|------------------------|
-   | `rsp`    | register stack pointer |
-   | `rbp`    | register base pointer  |
-   | `rbx`    | register b extended    |
-   | `r12`    | register 12            |
-   | `r13`    | register 13            |
-   | `r14`    | register 14            |
-   | `r15`    | register 15            |
-
-   This is not an exhaustive list! You may find that saving additional registers is needed.
-   A `typedef struct` called `uthread_ctx` is provided with the starter code. You may add
-   additional registers to the structure if you find it necesary. 
+   * __(10 points)__ `void * csx730_calloc(size_t nmemb, size_t size);`
+   * __(10 points)__ `void * csx730_realloc(void * ptr, size_t size);`
 
 ### Non-Functional Requirements
 
@@ -283,14 +162,13 @@ being subtracted from your point total. That is, they are all or nothing.
 1. __(100 points) Libraries:__ You are allowed to use any of the C standard library
    functions, unless they are explicitly forbidden below. A general reference for
    the C standard library is provided [here](https://en.cppreference.com/w/c).
-   No other libraries are permitted, especially `pthreads`. You are also **NOT**
+   No other libraries are permitted. You are also **NOT**
    allowed to use any of the following: 
-   * `sigsetjmp(3)`, 
-   * `siglongjmp(3)`,
-   * `getcontext(2)`, 
-   * `setcontext(2)`, 
-   * `makecontext(3)`, and 
-   * `swapcontext(3)`.
+   * `malloc(3)`, 
+   * `free(3)`,
+   * `mmap(2)`, 
+   * `calloc(3)`, and 
+   * `realloc(3)`.
 
 1. __(100 points) `SUBMISSION.md`:__ Your project must include a properly formatted 
    `SUBMISSION.md` file that includes, at a minimum, the following information:
