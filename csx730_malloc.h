@@ -23,7 +23,7 @@ void * csx730_malloc(size_t size);
 /**
  * Frees the memory space pointed to by @p ptr, which must have been returned by a previous call to
  * the @c csx730_malloc, @c csx730_calloc, or @c csx730_realloc function. If @p ptr is @c NULL, then
- * no operation is performed. If @c free(ptr) has already been called, then the behavior is
+ * no operation is performed. If @c csx730_free(ptr) has already been called, then the behavior is
  * undefined.
  * @param ptr pointer to allocated memory
  */
