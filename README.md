@@ -168,7 +168,9 @@ for use by a user.
 Your heap must be aligned to memory pages. On most systems, the original program break
 should be a multiple of the page size (e.g., from `getpagesize(2)`) and thus at the 
 beginning of a page. Here, page alignment specifically means that your total heap 
-size needs to be a multiple of the page size. 
+size needs to be a multiple of the page size. Futhermore, multipage blocks must also
+be aligned to memory pages -- that is, the address of such a block's metadata structure
+should be a multiple of the page size.
 
 Your heap must also minimize its heap size in addition to being aligned to memory pages.
 This means that whenever `csx730_malloc` and `csx730_free` are used, you should ensure
@@ -185,6 +187,8 @@ non-cryptographic free block chain. In the examples [provided below](#examples),
 block's metadata structure is `24` bytes.
 
 ### Examples
+
+Initially, the process has no heap:
 
 ```
 csx730_pheapmap()
@@ -205,6 +209,12 @@ csx730_pheapstats()
   .meta_size   = 24 (0x18) 
 }
 ```
+
+Next, we allocate `32` bytes of memory using `csx730_malloc`.
+Since the heap is required to be aligned to memory pages, this results
+in the automatic creation of a free block. In general, a free block
+is always created at the end of the heap -- sometimes this results in
+additional page.
 
 ```
 csx730_malloc(32) = 0x24dc018 [append]
@@ -234,6 +244,10 @@ csx730_pheapstats()
   .meta_size   = 24 (0x18) 
 }
 ```
+
+Next, we allocate `4048` bytes of memory using `csx730_malloc`.
+Since the heap free block at the end of the heap is not big
+enough, the total heap size is increased.
 
 ```
 csx730_malloc(4048) = 0x24dd018 [append]
@@ -271,6 +285,13 @@ csx730_pheapstats()
   .meta_size   = 24 (0x18) 
 }
 ```
+
+Next, we allocate `16384` bytes of memory using `csx730_malloc`.
+On this particular system, that is larger that the page size.
+Therefore, the total heap size is increased and the block's
+metadata structure is aligned to a page. In the output
+of `csx730_pheapmap`, you can see that multiple pages exist
+in the used block's allocated memory region.
 
 ```
 csx730_malloc(16384) = 0x24de018 [append]
@@ -321,6 +342,13 @@ csx730_pheapstats()
 }
 ```
 
+Now we free the memory at address `0x24dc018`
+using `csx730_free`. Instead of having two
+contiguous free blocks, the implementation
+joined them together into a block of size
+`4096` with `4072` bytes of memory available for
+future allocation.
+
 ```
 csx730_free(0x24dc018)
 csx730_pheapmap()
@@ -366,6 +394,12 @@ csx730_pheapstats()
 }
 ```
 
+Now we free the memory at address `0x24de018`
+using `csx730_free`. Since that frees up the
+multipage block at the end of the heap, the
+implementation shrinks the heap by moving the
+program break accordingly.
+
 ```
 csx730_free(0x24de018)
 csx730_pheapmap()
@@ -398,6 +432,13 @@ csx730_pheapstats()
   .meta_size   = 24 (0x18) 
 }
 ```
+
+Next, we allocate `100` bytes of memory using `csx730_malloc`.
+Since there is enough space available in the first free block,
+the implementation splits that free block and converts the first
+one into a block, adjusting the sizes of both blocks accordingly.
+The output shows that `csx730_malloc` is performing an "emplace"
+operation instead of an "append" operation on the heap. 
 
 ```
 csx730_malloc(100) = 0x24dc018 [emplace]
@@ -435,6 +476,13 @@ csx730_pheapstats()
   .meta_size   = 24 (0x18) 
 }
 ```
+
+Next, we allocate another `100` bytes of memory using `csx730_malloc`.
+Since there is enough space available in the first free block,
+the implementation splits that free block and converts the first
+one into a block, adjusting the sizes of both blocks accordingly.
+The output shows that `csx730_malloc` is performing an "emplace"
+operation instead of an "append" operation on the heap. 
 
 ```
 csx730_malloc(100) = 0x24dc094 [emplace]
@@ -476,6 +524,13 @@ csx730_pheapstats()
   .meta_size   = 24 (0x18) 
 }
 ```
+
+Next, we allocate `1025` bytes of memory using `csx730_malloc`.
+Since there is enough space available in the first free block,
+the implementation splits that free block and converts the first
+one into a block, adjusting the sizes of both blocks accordingly.
+The output shows that `csx730_malloc` is performing an "emplace"
+operation instead of an "append" operation on the heap. 
 
 ```
 csx730_malloc(1025) = 0x24dc110 [emplace]
@@ -521,6 +576,11 @@ csx730_pheapstats()
   .meta_size   = 24 (0x18) 
 }
 ```
+
+Now we free all currently allocated memory using multiple
+calls to `csx730_free`.
+The implementation recognizes that no blocks are needed
+and moves the program break back to its original position.
 
 ```
 csx730_free(0x24dd018)
