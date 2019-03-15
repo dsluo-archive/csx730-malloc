@@ -790,9 +790,6 @@ being subtracted from your point total. That is, they are all or nothing.
    A properly formatted sample `SUBMISSION.md` file is provided that may be modified to
    help fulfill this non-functional requirement.
 
-1. __(25 points) Memory Leaks:__ Your submission should not result in any memory leaks.
-   The grader will check this using `valgrind(1)`.
-
 1. __(25 points) Code Documentation:__ Any new functions or macros must be properly documented
    using Javadoc-style comments. An example of such comments can be seen in the souce code
    provided with the project. Please also use inline documentation, as needed, to explain
@@ -803,11 +800,11 @@ being subtracted from your point total. That is, they are all or nothing.
 You will still be submitting your project via Nike. Make sure your project files
 are on `nike.cs.uga.edu`. Change into the parent directory of your
 project directory. If you've followed the instructions provided in earlier in this
-document, then the name of your project directory is likely `csx730-uthread`.
+document, then the name of your project directory is likely `csx730-malloc`.
 While in your project parent directory, execute the following command: 
 
 ```
-$ submit csx730-uthread csx730
+$ submit csx730-malloc csx730
 ```
 
 If you have any problems submitting your project then please make a private Piazza
