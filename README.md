@@ -606,6 +606,41 @@ csx730_pheapstats()
 }
 ```
 
+In this final example, we allocate `4072` bytes of memory using `csx730_malloc`.
+On this system and implementation, this causes the used block that is created 
+to be the same size as a page. Theoretically, this would only require a single
+block, however, the implementation chooses to create a free block at the end
+of the heap, requiring an additional page.
+
+```
+csx730_malloc(4072) = 0x127b018 [append]
+csx730_pheapmap()
+  ------------------
+P 0x000000000127a000 original program break
+  ------------------
+P 0x000000000127b000 used block
+  0x000000000127b018 start (4072 bytes)
+P 0x000000000127c000 end
+  ------------------
+P 0x000000000127c000 free block
+  0x000000000127c018 start (4072 bytes)
+P 0x000000000127d000 end
+  ------------------
+P 0x000000000127d000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x127a000
+  .brk         = 0x127d000
+  .total_size  = 12288 (0x3000)
+  .used_size   = 4072 (0xfe8)
+  .free_size   = 4072 (0xfe8)
+  .head_meta   = 0x127b000
+  .meta_size   = 24 (0x18)
+}
+```
+
 ## How to Get the Skeleton Code
 
 On Nike, execute the following terminal command in order to download the project
