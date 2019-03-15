@@ -41,9 +41,10 @@ The heap or free store is the memory area of a process reserved by dynamic alloc
 In most C programs, this area is managed by `malloc(3)` and `free(3)`. 
 In this project, you are tasked with implementing the `malloc(3)` family of functions
 in C using a non-crpytographic block chain! Essentially, your code will be in charge
-of managing the process's heap. Mixing your implementation with GLIBC's `malloc(3)`
-and `free(3)` is undefined. Some starter code is provided. 
-Other project details are provided below.
+of managing the process's heap by manually changing the program break and keeping
+track of what parts of your heap are available (i.e., free) and unavailable (i.e.,
+used). Mixing your implementation with GLIBC's `malloc(3)` and `free(3)` is undefined. 
+Some starter code is provided. Other project details are provided below.
 
 ### The User API
 
@@ -108,7 +109,7 @@ The Developer API provides three functions:
   with zeros. To the right of each address is a description, which should be present for
   the following: the original program break, the current program break, the first address
   in the metadata for a memory block, the start of a memory block's allocated memory, and the
-  end of a memory block's allocated memory. Here, allocated refers to the memory allocated
+  end of a memory block's allocated memory. Here, the term "allocated" refers to the memory allocated
   for use by the user. If an allocated region crosses a page boundary, then that address
   should be printed. 
   
@@ -150,7 +151,38 @@ The Developer API provides three functions:
   
 ### How to Manage your Heap 
 
+Your code will be in charge of the process's heap by manually adjusting the program break,
+as needed, using `brk(2)` and `sbrk(2)`. As such, mixing your implementation with GLIBC's 
+`malloc(3)` and `free(3)` is undefined. 
+For this project, we will define the term "heap" as the virtual memory between the original 
+program break and the new program break.
+Your heap should consist of a sequence of "blocks", which are defined here as
+contiguous areas of virtual memory within the heap space.  
+The blocks themselves should also be contiguous within the heap
+are some requirements. 
+Each block consists of two parts, a metadata structure and a region of contiguous memory
+that is either "used" or "free". A "used" block is one in which `csx730_malloc` has
+"allocated" for use by a user. A "free" block is one that is available to be "allocated"
+for use by a user.
+
+Your heap must be aligned to memory pages. On most systems, the original program break
+should be a multiple of the page size (e.g., from `getpagesize(2)`) and thus at the 
+beginning of a page. Here, page alignment specifically means that your total heap 
+size needs to be a multiple of the page size. 
+
+Your heap must also minimize its heap size in addition to being aligned to memory pages.
+This means that whenever `csx730_malloc` and `csx730_free` are used, you should ensure
+that the total heap size is as small as it can be given the alignment property. 
+Multiple examples are [provided below](#examples).
+
 ### Block Metadata  
+
+The metadata for each block usually consists of the block's state (i.e., used or free)
+as well as some pointers to other blocks. Many implementations use one pointer to maintain
+a list of all blocks and the other pointer to maintain a list of all free blocks. When
+a linked list of free blocks is implemented, the implementation is referred to as a
+non-cryptographic free block chain. In the examples [provided below](#examples), each
+block's metadata structure is `24` bytes.
 
 ### Examples
 
@@ -566,17 +598,18 @@ The actual functionality is tested using test cases.
    Please be aware that the __Build Compliance__ non-functional requirement still
    applies.
 
-1. __(50 points) Implement `csx730_malloc.h` functions in `csx730_malloc.c`.__
+1. __(20 points) Implement `csx730_malloc.h` functions in `csx730_malloc.c`.__
    Each of the functions whose prototype appears in the header and does not require
    the `_CS6760_SOURCE` feature test macro must be implemented correctly in the
-   corresponding `.c` file. Here is a list of the functions forming the public API:
+   corresponding `.c` file. Here is a list of the functions forming the user API:
 
-   * __(10 points)__ `void * csx730_malloc(size_t size);`
-   * __(10 points)__ `void csx730_free(void * ptr);`
+   * __(15 points)__ `void * csx730_malloc(size_t size);`
+   * __(15 points)__ `void csx730_free(void * ptr);`
 
-   Here is a list of functions forming the (private) developer API:
+   Here is a list of functions forming the developer API:
    
-   * __(30 points)__ `void csx730_pheap(void);`
+   * __(15 points)__ `void csx730_pheapstats(void);`
+   * __(15 points)__ `void csx730_pheapmap(void);`
 
    The documentation for each function is provided directly in
    the header. You may generate an HTML version of the corresponding
