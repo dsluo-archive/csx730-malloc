@@ -1,7 +1,8 @@
 # csx730-malloc
 
-> The fibers of all things have their tension and are strained like the strings of an instrument.
-> __--Henry David Thoreau__
+> Without memory, there is no culture. 
+> Without memory, there would be no civilization, no society, no future.
+> __--Elie Wiesel__
 
 **DUE FRI 2019-04-01 (Apr 01) @ 11:55 PM**
 
