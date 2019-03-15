@@ -68,11 +68,23 @@ The primary User API provides two functions:
 The Developer API provides three functions:
 
 * __`void csx730_pheapstats(void);`__<br>
-  TODO write.
+  Prints a summary of the heap to standard output. At a minimum, the following information
+  should be printed: the pagesize, the original program break, the current program break,
+  the total heap size, free size, used size, and the size of a block's metadata structure. 
+  Sizes denote a number of bytes and should be presented in decimal. Optionally, they
+  may also be presented in hexadecimal. Users may print out 
+  Multiple examples are [provided below](#examples).
 
 * __`void csx730_pheapmap(void);`__<br>
-  TODO write.
-  Examples are [provided below](#examples).
+  Prints a memory map of the heap to standard outpt. Each non-separator line in the output 
+  denotes a memory address. If the memory address is a multiple of the pagesize, then that
+  line is prefixed with a `P`. The address itself is printed in 16-digit hexadeximal, padded 
+  with zeros. To the right of each address is a description, which should be present for
+  the following: the original program break, the current program break, the first address
+  in the metadata for a memory block, the start of a memory block's allocated memory, and the
+  end of a memory block's allocated memory. Here, allocated refers to the memory allocated
+  for use by the user. If an allocated region crosses a page boundary, then that address
+  should be printed. Multiple examples are [provided below](#examples).
   
 ### How to Manage your Heap 
 
@@ -81,243 +93,363 @@ The Developer API provides three functions:
 ### Examples
 
 ```
-csx730_pheap()
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 program break
+P 0x00000000024dc000 program break
+csx730_pheapstats()
+{
+  .initialized = FALSE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24dc000
+  .total_size  = 0 (0x0) 
+  .used_size   = 0 (0x0) 
+  .free_size   = 0 (0x0) 
+  .head_meta   = (nil)
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_malloc(32) = 0x19e0018 [append]
-csx730_pheap()
+csx730_malloc(32) = 0x24dc018 [append]
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 used block
-  0x00000000019e0018 start (32 bytes)
-  0x00000000019e0038 end
+P 0x00000000024dc000 used block
+  0x00000000024dc018 start (32 bytes)
+  0x00000000024dc038 end
   ------------------
-  0x00000000019e0038 free block
-  0x00000000019e0050 start (4016 bytes)
-P 0x00000000019e1000 end
+  0x00000000024dc038 free block
+  0x00000000024dc050 start (4016 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 program break
+P 0x00000000024dd000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24dd000
+  .total_size  = 4096 (0x1000) 
+  .used_size   = 32 (0x20) 
+  .free_size   = 4016 (0xfb0) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_malloc(4048) = 0x19e1018 [append]
-csx730_pheap()
+csx730_malloc(4048) = 0x24dd018 [append]
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 used block
-  0x00000000019e0018 start (32 bytes)
-  0x00000000019e0038 end
+P 0x00000000024dc000 used block
+  0x00000000024dc018 start (32 bytes)
+  0x00000000024dc038 end
   ------------------
-  0x00000000019e0038 free block
-  0x00000000019e0050 start (4016 bytes)
-P 0x00000000019e1000 end
+  0x00000000024dc038 free block
+  0x00000000024dc050 start (4016 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 used block
-  0x00000000019e1018 start (4048 bytes)
-  0x00000000019e1fe8 end
+P 0x00000000024dd000 used block
+  0x00000000024dd018 start (4048 bytes)
+  0x00000000024ddfe8 end
   ------------------
-  0x00000000019e1fe8 free block
-P 0x00000000019e2000 start (0 bytes)
-P 0x00000000019e2000 end
+  0x00000000024ddfe8 free block
+P 0x00000000024de000 start (0 bytes)
+P 0x00000000024de000 end
   ------------------
-P 0x00000000019e2000 program break
+P 0x00000000024de000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24de000
+  .total_size  = 8192 (0x2000) 
+  .used_size   = 4080 (0xff0) 
+  .free_size   = 4016 (0xfb0) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_malloc(16384) = 0x19e2018 [append]
-csx730_pheap()
+csx730_malloc(16384) = 0x24de018 [append]
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 used block
-  0x00000000019e0018 start (32 bytes)
-  0x00000000019e0038 end
+P 0x00000000024dc000 used block
+  0x00000000024dc018 start (32 bytes)
+  0x00000000024dc038 end
   ------------------
-  0x00000000019e0038 free block
-  0x00000000019e0050 start (4016 bytes)
-P 0x00000000019e1000 end
+  0x00000000024dc038 free block
+  0x00000000024dc050 start (4016 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 used block
-  0x00000000019e1018 start (4048 bytes)
-  0x00000000019e1fe8 end
+P 0x00000000024dd000 used block
+  0x00000000024dd018 start (4048 bytes)
+  0x00000000024ddfe8 end
   ------------------
-  0x00000000019e1fe8 free block
-P 0x00000000019e2000 start (0 bytes)
-P 0x00000000019e2000 end
+  0x00000000024ddfe8 free block
+P 0x00000000024de000 start (0 bytes)
+P 0x00000000024de000 end
   ------------------
-P 0x00000000019e2000 used block
-  0x00000000019e2018 start (16384 bytes)
-P 0x00000000019e3000 
-P 0x00000000019e4000 
-P 0x00000000019e5000 
-P 0x00000000019e6000 
-  0x00000000019e6018 end
+P 0x00000000024de000 used block
+  0x00000000024de018 start (16384 bytes)
+P 0x00000000024df000 
+P 0x00000000024e0000 
+P 0x00000000024e1000 
+P 0x00000000024e2000 
+  0x00000000024e2018 end
   ------------------
-  0x00000000019e6018 free block
-  0x00000000019e6030 start (4048 bytes)
-P 0x00000000019e7000 end
+  0x00000000024e2018 free block
+  0x00000000024e2030 start (4048 bytes)
+P 0x00000000024e3000 end
   ------------------
-P 0x00000000019e7000 program break
+P 0x00000000024e3000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24e3000
+  .total_size  = 28672 (0x7000) 
+  .used_size   = 20464 (0x4ff0) 
+  .free_size   = 8064 (0x1f80) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_free(0x19e0018)
-csx730_pheap()
+csx730_free(0x24dc018)
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 free block
-  0x00000000019e0018 start (4072 bytes)
-P 0x00000000019e1000 end
+P 0x00000000024dc000 free block
+  0x00000000024dc018 start (4072 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 used block
-  0x00000000019e1018 start (4048 bytes)
-  0x00000000019e1fe8 end
+P 0x00000000024dd000 used block
+  0x00000000024dd018 start (4048 bytes)
+  0x00000000024ddfe8 end
   ------------------
-  0x00000000019e1fe8 free block
-P 0x00000000019e2000 start (0 bytes)
-P 0x00000000019e2000 end
+  0x00000000024ddfe8 free block
+P 0x00000000024de000 start (0 bytes)
+P 0x00000000024de000 end
   ------------------
-P 0x00000000019e2000 used block
-  0x00000000019e2018 start (16384 bytes)
-P 0x00000000019e3000 
-P 0x00000000019e4000 
-P 0x00000000019e5000 
-P 0x00000000019e6000 
-  0x00000000019e6018 end
+P 0x00000000024de000 used block
+  0x00000000024de018 start (16384 bytes)
+P 0x00000000024df000 
+P 0x00000000024e0000 
+P 0x00000000024e1000 
+P 0x00000000024e2000 
+  0x00000000024e2018 end
   ------------------
-  0x00000000019e6018 free block
-  0x00000000019e6030 start (4048 bytes)
-P 0x00000000019e7000 end
+  0x00000000024e2018 free block
+  0x00000000024e2030 start (4048 bytes)
+P 0x00000000024e3000 end
   ------------------
-P 0x00000000019e7000 program break
+P 0x00000000024e3000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24e3000
+  .total_size  = 28672 (0x7000) 
+  .used_size   = 20432 (0x4fd0) 
+  .free_size   = 8120 (0x1fb8) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_free(0x19e2018)
-csx730_pheap()
+csx730_free(0x24de018)
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 free block
-  0x00000000019e0018 start (4072 bytes)
-P 0x00000000019e1000 end
+P 0x00000000024dc000 free block
+  0x00000000024dc018 start (4072 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 used block
-  0x00000000019e1018 start (4048 bytes)
-  0x00000000019e1fe8 end
+P 0x00000000024dd000 used block
+  0x00000000024dd018 start (4048 bytes)
+  0x00000000024ddfe8 end
   ------------------
-  0x00000000019e1fe8 free block
-P 0x00000000019e2000 start (0 bytes)
-P 0x00000000019e2000 end
+  0x00000000024ddfe8 free block
+P 0x00000000024de000 start (0 bytes)
+P 0x00000000024de000 end
   ------------------
-P 0x00000000019e2000 program break
+P 0x00000000024de000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24de000
+  .total_size  = 8192 (0x2000) 
+  .used_size   = 4048 (0xfd0) 
+  .free_size   = 4072 (0xfe8) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_malloc(100) = 0x19e0018 [emplace]
-csx730_pheap()
+csx730_malloc(100) = 0x24dc018 [emplace]
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 used block
-  0x00000000019e0018 start (100 bytes)
-  0x00000000019e007c end
+P 0x00000000024dc000 used block
+  0x00000000024dc018 start (100 bytes)
+  0x00000000024dc07c end
   ------------------
-  0x00000000019e007c free block
-  0x00000000019e0094 start (3948 bytes)
-P 0x00000000019e1000 end
+  0x00000000024dc07c free block
+  0x00000000024dc094 start (3948 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 used block
-  0x00000000019e1018 start (4048 bytes)
-  0x00000000019e1fe8 end
+P 0x00000000024dd000 used block
+  0x00000000024dd018 start (4048 bytes)
+  0x00000000024ddfe8 end
   ------------------
-  0x00000000019e1fe8 free block
-P 0x00000000019e2000 start (0 bytes)
-P 0x00000000019e2000 end
+  0x00000000024ddfe8 free block
+P 0x00000000024de000 start (0 bytes)
+P 0x00000000024de000 end
   ------------------
-P 0x00000000019e2000 program break
+P 0x00000000024de000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24de000
+  .total_size  = 8192 (0x2000) 
+  .used_size   = 4148 (0x1034) 
+  .free_size   = 3948 (0xf6c) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_malloc(100) = 0x19e0094 [emplace]
-csx730_pheap()
+csx730_malloc(100) = 0x24dc094 [emplace]
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 used block
-  0x00000000019e0018 start (100 bytes)
-  0x00000000019e007c end
+P 0x00000000024dc000 used block
+  0x00000000024dc018 start (100 bytes)
+  0x00000000024dc07c end
   ------------------
-  0x00000000019e007c used block
-  0x00000000019e0094 start (100 bytes)
-  0x00000000019e00f8 end
+  0x00000000024dc07c used block
+  0x00000000024dc094 start (100 bytes)
+  0x00000000024dc0f8 end
   ------------------
-  0x00000000019e00f8 free block
-  0x00000000019e0110 start (3824 bytes)
-P 0x00000000019e1000 end
+  0x00000000024dc0f8 free block
+  0x00000000024dc110 start (3824 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 used block
-  0x00000000019e1018 start (4048 bytes)
-  0x00000000019e1fe8 end
+P 0x00000000024dd000 used block
+  0x00000000024dd018 start (4048 bytes)
+  0x00000000024ddfe8 end
   ------------------
-  0x00000000019e1fe8 free block
-P 0x00000000019e2000 start (0 bytes)
-P 0x00000000019e2000 end
+  0x00000000024ddfe8 free block
+P 0x00000000024de000 start (0 bytes)
+P 0x00000000024de000 end
   ------------------
-P 0x00000000019e2000 program break
+P 0x00000000024de000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24de000
+  .total_size  = 8192 (0x2000) 
+  .used_size   = 4248 (0x1098) 
+  .free_size   = 3824 (0xef0) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_malloc(1025) = 0x19e0110 [emplace]
-csx730_pheap()
+csx730_malloc(1025) = 0x24dc110 [emplace]
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 used block
-  0x00000000019e0018 start (100 bytes)
-  0x00000000019e007c end
+P 0x00000000024dc000 used block
+  0x00000000024dc018 start (100 bytes)
+  0x00000000024dc07c end
   ------------------
-  0x00000000019e007c used block
-  0x00000000019e0094 start (100 bytes)
-  0x00000000019e00f8 end
+  0x00000000024dc07c used block
+  0x00000000024dc094 start (100 bytes)
+  0x00000000024dc0f8 end
   ------------------
-  0x00000000019e00f8 used block
-  0x00000000019e0110 start (1025 bytes)
-  0x00000000019e0511 end
+  0x00000000024dc0f8 used block
+  0x00000000024dc110 start (1025 bytes)
+  0x00000000024dc511 end
   ------------------
-  0x00000000019e0511 free block
-  0x00000000019e0529 start (2775 bytes)
-P 0x00000000019e1000 end
+  0x00000000024dc511 free block
+  0x00000000024dc529 start (2775 bytes)
+P 0x00000000024dd000 end
   ------------------
-P 0x00000000019e1000 used block
-  0x00000000019e1018 start (4048 bytes)
-  0x00000000019e1fe8 end
+P 0x00000000024dd000 used block
+  0x00000000024dd018 start (4048 bytes)
+  0x00000000024ddfe8 end
   ------------------
-  0x00000000019e1fe8 free block
-P 0x00000000019e2000 start (0 bytes)
-P 0x00000000019e2000 end
+  0x00000000024ddfe8 free block
+P 0x00000000024de000 start (0 bytes)
+P 0x00000000024de000 end
   ------------------
-P 0x00000000019e2000 program break
+P 0x00000000024de000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24de000
+  .total_size  = 8192 (0x2000) 
+  .used_size   = 5273 (0x1499) 
+  .free_size   = 2775 (0xad7) 
+  .head_meta   = 0x24dc000
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ```
-csx730_free(0x19e1018)
-csx730_free(0x19e0018)
-csx730_free(0x19e0094)
-csx730_free(0x19e0110)
-csx730_pheap()
+csx730_free(0x24dd018)
+csx730_free(0x24dc018)
+csx730_free(0x24dc094)
+csx730_free(0x24dc110)
+csx730_pheapmap()
   ------------------
-P 0x00000000019e0000 original program break
+P 0x00000000024dc000 original program break
   ------------------
-P 0x00000000019e0000 program break
+P 0x00000000024dc000 program break
+csx730_pheapstats()
+{
+  .initialized = TRUE
+  .page_size   = 4096 (0x1000)
+  .brk0        = 0x24dc000
+  .brk         = 0x24dc000
+  .total_size  = 0 (0x0) 
+  .used_size   = 0 (0x0) 
+  .free_size   = 0 (0x0) 
+  .head_meta   = (nil)
+  .meta_size   = 24 (0x18) 
+}
 ```
 
 ## How to Get the Skeleton Code
