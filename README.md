@@ -44,9 +44,9 @@ In this project, you are tasked with implementing the `malloc(3)` family of func
 in C using a non-cryptographic block chain! Essentially, your code will be in charge
 of managing the process's heap by manually changing the program break and keeping
 track of what parts of your heap are available (i.e., free) and unavailable (i.e.,
-used) via a linked list. Since the linked list elements refer to memory "blocks", memory
-allocator ethusiasts refer to this management scheme as a block chain, which should
-not be condused with the cryptographic block chains used for cryptocurrencies.
+used) via a linked list. Since the linked list elements refer to memory "blocks", many 
+memory allocator ethusiasts refer to this implementation as a block chain. This term
+should not be confused with the cryptographic block chains used for cryptocurrencies.
 Mixing your implementation with GLIBC's `malloc(3)` and `free(3)` is undefined. 
 Some starter code is provided. Other project details are provided below.
 
