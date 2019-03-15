@@ -29,6 +29,18 @@ void * csx730_malloc(size_t size);
  */
 void csx730_free(void * ptr);
 
+/**
+ * Prints a summary of the heap to standard outpt. See the project description for more details
+ * and output examples.
+ */
+void csx730_pheapstats(void);
+
+/**
+ * Prints a memory map of the heap to standard outpt. See the project description for more details
+ * and output examples.
+ */
+void csx730_pheapmap(void);
+
 #ifdef _CS6730_SOURCE
 
 /**
