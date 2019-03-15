@@ -688,12 +688,12 @@ There will be no partial credit for any of the requirements that simply
 require the presence of a function related a particular functionality. 
 The actual functionality is tested using test cases.
 
-1. __(50 points) Project Compiles.__ Your submission compiles and can successfully
+1. __(40 points) Project Compiles.__ Your submission compiles and can successfully
    link with object files expecting the symbols defined in `csx730_malloc.h`. 
    Please be aware that the __Build Compliance__ non-functional requirement still
    applies.
 
-1. __(20 points) Implement `csx730_malloc.h` functions in `csx730_malloc.c`.__
+1. __(60 points) Implement `csx730_malloc.h` functions in `csx730_malloc.c`.__
    Each of the functions whose prototype appears in the header and does not require
    the `_CS6760_SOURCE` feature test macro must be implemented correctly in the
    corresponding `.c` file. Here is a list of the functions forming the user API:
@@ -723,12 +723,18 @@ for students enrolled in CSCI 6730 and a functional requirement for students enr
 CSCI 4730. This effectively provides an extra credit opportunity to the undergraduate
 students and a non-compliance penalty for the graduate students.
 
-1. __(20 points) [PRIORITY] Implement `_CS6730_SOURCE` features__
+1. __(20 points) [CS6730] Implement `_CS6730_SOURCE` features__
    The `_CS6730_SOURCE` feature test macro should enable the following addtional 
    functions to the public API:
 
    * __(10 points)__ `void * csx730_calloc(size_t nmemb, size_t size);`
    * __(10 points)__ `void * csx730_realloc(void * ptr, size_t size);`
+
+   The documentation for each function is provided directly in
+   the header. You may generate an HTML version of the corresponding
+   documentation using the `doc` target provided by the project's `Makefile`.
+   Students should not modify the prototypes for these functions in any way--doing
+   so will cause the tester used by the grader to fail.
 
 ### Non-Functional Requirements
 
