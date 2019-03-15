@@ -81,90 +81,243 @@ The Developer API provides three functions:
 ### Examples
 
 ```
-print_heap_map()
+csx730_pheap()
   ------------------
-P 0x00000000017dc000 original program break
+P 0x00000000019e0000 original program break
   ------------------
-P 0x00000000017dc000 program break
+P 0x00000000019e0000 program break
 ```
 
 ```
-malloc(32) = 0x17dc018 [append]
-print_heap_map()
+csx730_malloc(32) = 0x19e0018 [append]
+csx730_pheap()
   ------------------
-P 0x00000000017dc000 original program break
+P 0x00000000019e0000 original program break
   ------------------
-P 0x00000000017dc000 used chunk
-  0x00000000017dc018 start (32 bytes)
-  0x00000000017dc038 end
+P 0x00000000019e0000 used block
+  0x00000000019e0018 start (32 bytes)
+  0x00000000019e0038 end
   ------------------
-  0x00000000017dc038 free chunk
-  0x00000000017dc050 start (4016 bytes)
-P 0x00000000017dd000 end
+  0x00000000019e0038 free block
+  0x00000000019e0050 start (4016 bytes)
+P 0x00000000019e1000 end
   ------------------
-P 0x00000000017dd000 program break
+P 0x00000000019e1000 program break
 ```
 
 ```
-malloc(4048) = 0x17dd018 [append]
-print_heap_map()
+csx730_malloc(4048) = 0x19e1018 [append]
+csx730_pheap()
   ------------------
-P 0x00000000017dc000 original program break
+P 0x00000000019e0000 original program break
   ------------------
-P 0x00000000017dc000 used chunk
-  0x00000000017dc018 start (32 bytes)
-  0x00000000017dc038 end
+P 0x00000000019e0000 used block
+  0x00000000019e0018 start (32 bytes)
+  0x00000000019e0038 end
   ------------------
-  0x00000000017dc038 free chunk
-  0x00000000017dc050 start (4016 bytes)
-P 0x00000000017dd000 end
+  0x00000000019e0038 free block
+  0x00000000019e0050 start (4016 bytes)
+P 0x00000000019e1000 end
   ------------------
-P 0x00000000017dd000 used chunk
-  0x00000000017dd018 start (4048 bytes)
-  0x00000000017ddfe8 end
+P 0x00000000019e1000 used block
+  0x00000000019e1018 start (4048 bytes)
+  0x00000000019e1fe8 end
   ------------------
-  0x00000000017ddfe8 free chunk
-P 0x00000000017de000 start (0 bytes)
-P 0x00000000017de000 end
+  0x00000000019e1fe8 free block
+P 0x00000000019e2000 start (0 bytes)
+P 0x00000000019e2000 end
   ------------------
-P 0x00000000017de000 program break
+P 0x00000000019e2000 program break
 ```
 
 ```
-malloc(16384) = 0x17de018 [append]
-print_heap_map()
+csx730_malloc(16384) = 0x19e2018 [append]
+csx730_pheap()
   ------------------
-P 0x00000000017dc000 original program break
+P 0x00000000019e0000 original program break
   ------------------
-P 0x00000000017dc000 used chunk
-  0x00000000017dc018 start (32 bytes)
-  0x00000000017dc038 end
+P 0x00000000019e0000 used block
+  0x00000000019e0018 start (32 bytes)
+  0x00000000019e0038 end
   ------------------
-  0x00000000017dc038 free chunk
-  0x00000000017dc050 start (4016 bytes)
-P 0x00000000017dd000 end
+  0x00000000019e0038 free block
+  0x00000000019e0050 start (4016 bytes)
+P 0x00000000019e1000 end
   ------------------
-P 0x00000000017dd000 used chunk
-  0x00000000017dd018 start (4048 bytes)
-  0x00000000017ddfe8 end
+P 0x00000000019e1000 used block
+  0x00000000019e1018 start (4048 bytes)
+  0x00000000019e1fe8 end
   ------------------
-  0x00000000017ddfe8 free chunk
-P 0x00000000017de000 start (0 bytes)
-P 0x00000000017de000 end
+  0x00000000019e1fe8 free block
+P 0x00000000019e2000 start (0 bytes)
+P 0x00000000019e2000 end
   ------------------
-P 0x00000000017de000 used chunk
-  0x00000000017de018 start (16384 bytes)
-P 0x00000000017df000 
-P 0x00000000017e0000 
-P 0x00000000017e1000 
-P 0x00000000017e2000 
-  0x00000000017e2018 end
+P 0x00000000019e2000 used block
+  0x00000000019e2018 start (16384 bytes)
+P 0x00000000019e3000 
+P 0x00000000019e4000 
+P 0x00000000019e5000 
+P 0x00000000019e6000 
+  0x00000000019e6018 end
   ------------------
-  0x00000000017e2018 free chunk
-  0x00000000017e2030 start (4048 bytes)
-P 0x00000000017e3000 end
+  0x00000000019e6018 free block
+  0x00000000019e6030 start (4048 bytes)
+P 0x00000000019e7000 end
   ------------------
-P 0x00000000017e3000 program break
+P 0x00000000019e7000 program break
+```
+
+```
+csx730_free(0x19e0018)
+csx730_pheap()
+  ------------------
+P 0x00000000019e0000 original program break
+  ------------------
+P 0x00000000019e0000 free block
+  0x00000000019e0018 start (4072 bytes)
+P 0x00000000019e1000 end
+  ------------------
+P 0x00000000019e1000 used block
+  0x00000000019e1018 start (4048 bytes)
+  0x00000000019e1fe8 end
+  ------------------
+  0x00000000019e1fe8 free block
+P 0x00000000019e2000 start (0 bytes)
+P 0x00000000019e2000 end
+  ------------------
+P 0x00000000019e2000 used block
+  0x00000000019e2018 start (16384 bytes)
+P 0x00000000019e3000 
+P 0x00000000019e4000 
+P 0x00000000019e5000 
+P 0x00000000019e6000 
+  0x00000000019e6018 end
+  ------------------
+  0x00000000019e6018 free block
+  0x00000000019e6030 start (4048 bytes)
+P 0x00000000019e7000 end
+  ------------------
+P 0x00000000019e7000 program break
+```
+
+```
+csx730_free(0x19e2018)
+csx730_pheap()
+  ------------------
+P 0x00000000019e0000 original program break
+  ------------------
+P 0x00000000019e0000 free block
+  0x00000000019e0018 start (4072 bytes)
+P 0x00000000019e1000 end
+  ------------------
+P 0x00000000019e1000 used block
+  0x00000000019e1018 start (4048 bytes)
+  0x00000000019e1fe8 end
+  ------------------
+  0x00000000019e1fe8 free block
+P 0x00000000019e2000 start (0 bytes)
+P 0x00000000019e2000 end
+  ------------------
+P 0x00000000019e2000 program break
+```
+
+```
+csx730_malloc(100) = 0x19e0018 [emplace]
+csx730_pheap()
+  ------------------
+P 0x00000000019e0000 original program break
+  ------------------
+P 0x00000000019e0000 used block
+  0x00000000019e0018 start (100 bytes)
+  0x00000000019e007c end
+  ------------------
+  0x00000000019e007c free block
+  0x00000000019e0094 start (3948 bytes)
+P 0x00000000019e1000 end
+  ------------------
+P 0x00000000019e1000 used block
+  0x00000000019e1018 start (4048 bytes)
+  0x00000000019e1fe8 end
+  ------------------
+  0x00000000019e1fe8 free block
+P 0x00000000019e2000 start (0 bytes)
+P 0x00000000019e2000 end
+  ------------------
+P 0x00000000019e2000 program break
+```
+
+```
+csx730_malloc(100) = 0x19e0094 [emplace]
+csx730_pheap()
+  ------------------
+P 0x00000000019e0000 original program break
+  ------------------
+P 0x00000000019e0000 used block
+  0x00000000019e0018 start (100 bytes)
+  0x00000000019e007c end
+  ------------------
+  0x00000000019e007c used block
+  0x00000000019e0094 start (100 bytes)
+  0x00000000019e00f8 end
+  ------------------
+  0x00000000019e00f8 free block
+  0x00000000019e0110 start (3824 bytes)
+P 0x00000000019e1000 end
+  ------------------
+P 0x00000000019e1000 used block
+  0x00000000019e1018 start (4048 bytes)
+  0x00000000019e1fe8 end
+  ------------------
+  0x00000000019e1fe8 free block
+P 0x00000000019e2000 start (0 bytes)
+P 0x00000000019e2000 end
+  ------------------
+P 0x00000000019e2000 program break
+```
+
+```
+csx730_malloc(1025) = 0x19e0110 [emplace]
+csx730_pheap()
+  ------------------
+P 0x00000000019e0000 original program break
+  ------------------
+P 0x00000000019e0000 used block
+  0x00000000019e0018 start (100 bytes)
+  0x00000000019e007c end
+  ------------------
+  0x00000000019e007c used block
+  0x00000000019e0094 start (100 bytes)
+  0x00000000019e00f8 end
+  ------------------
+  0x00000000019e00f8 used block
+  0x00000000019e0110 start (1025 bytes)
+  0x00000000019e0511 end
+  ------------------
+  0x00000000019e0511 free block
+  0x00000000019e0529 start (2775 bytes)
+P 0x00000000019e1000 end
+  ------------------
+P 0x00000000019e1000 used block
+  0x00000000019e1018 start (4048 bytes)
+  0x00000000019e1fe8 end
+  ------------------
+  0x00000000019e1fe8 free block
+P 0x00000000019e2000 start (0 bytes)
+P 0x00000000019e2000 end
+  ------------------
+P 0x00000000019e2000 program break
+```
+
+```
+csx730_free(0x19e1018)
+csx730_free(0x19e0018)
+csx730_free(0x19e0094)
+csx730_free(0x19e0110)
+csx730_pheap()
+  ------------------
+P 0x00000000019e0000 original program break
+  ------------------
+P 0x00000000019e0000 program break
 ```
 
 ## How to Get the Skeleton Code
