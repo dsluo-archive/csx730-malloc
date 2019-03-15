@@ -12,19 +12,19 @@ at the University of Georgia.
 
 ## Table of Contents
 
-1. [Academic Honesty]()
-1. [Memory Allocation]()
-   1. [The User API]()
-   1. [The Developer API]()
-   1. [How to Manage your Heap]()
-   1. [Block Metadata]()
-   1. [Examples]()
-1. [How to Get the Skeleton Code]()
-1. [Project Requirements]()
-   1. [Functional Requirements]()
-   1. [6730 Requirements]()
-   1. [Non-Functional Requirements]()
-1. [Submission Instructions]()
+1. [Academic Honesty](#academic-honesty)
+1. [Memory Allocation](#memory-allocation)
+   1. [The User API](#the-user-api)
+   1. [The Developer API](#the-developer-api)
+   1. [How to Manage your Heap](#how-to-manage-your-heap)
+   1. [Block Metadata](#block-metadata)
+   1. [Examples](#examples)
+1. [How to Get the Skeleton Code](#how-to-get-the-skeleton-code)
+1. [Project Requirements](#project-requirements)
+   1. [Functional Requirements](#functional-requirements)
+   1. [6730 Requirements](#6730-requirements)
+   1. [Non-Functional Requirements](#non-functional-requirements)
+1. [Submission Instructions](#submission-instructions)
 
 ## Academic Honesty
 
