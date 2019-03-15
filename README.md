@@ -72,7 +72,26 @@ The Developer API provides three functions:
   should be printed: the pagesize, the original program break, the current program break,
   the total heap size, free size, used size, and the size of a block's metadata structure. 
   Sizes denote a number of bytes and should be presented in decimal. Optionally, they
-  may also be presented in hexadecimal. Multiple examples are [provided below](#examples).
+  may also be presented in hexadecimal. 
+  
+  * Here is an annoted example:
+    
+    ```
+    csx730_pheapstats()
+    {
+      .initialized = TRUE
+      .page_size   = 4096 (0x1000)
+      .brk0        = 0x24dc000
+      .brk         = 0x24de000
+      .total_size  = 8192 (0x2000) 
+      .used_size   = 5273 (0x1499) 
+      .free_size   = 2775 (0xad7) 
+      .head_meta   = 0x24dc000
+      .meta_size   = 24 (0x18) 
+    }
+    ```
+  
+  * Further examples are [provided below](#examples).
 
 * __`void csx730_pheapmap(void);`__<br>
   Prints a memory map of the heap to standard outpt. Each non-separator line in the output 
