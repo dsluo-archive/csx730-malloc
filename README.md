@@ -41,7 +41,7 @@ notice and licensing information at the bottom of this document.
 The heap or free store is the memory area of a process reserved by dynamic allocation.
 In most C programs, this area is managed by `malloc(3)` and `free(3)`. 
 In this project, you are tasked with implementing the `malloc(3)` family of functions
-in C using a non-crpytographic block chain! Essentially, your code will be in charge
+in C using a non-cryptographic block chain! Essentially, your code will be in charge
 of managing the process's heap by manually changing the program break and keeping
 track of what parts of your heap are available (i.e., free) and unavailable (i.e.,
 used). Mixing your implementation with GLIBC's `malloc(3)` and `free(3)` is undefined. 
