@@ -74,24 +74,31 @@ The Developer API provides three functions:
   Sizes denote a number of bytes and should be presented in decimal. Optionally, they
   may also be presented in hexadecimal. 
   
-  * Here is an annoted example:
+  * Here is an annoted example (`//` comments should be omitted in actual output):
     
     ```
     csx730_pheapstats()
     {
       .initialized = TRUE
-      .page_size   = 4096 (0x1000)
-      .brk0        = 0x24dc000
-      .brk         = 0x24de000
-      .total_size  = 8192 (0x2000) 
-      .used_size   = 5273 (0x1499) 
-      .free_size   = 2775 (0xad7) 
-      .head_meta   = 0x24dc000
-      .meta_size   = 24 (0x18) 
+      .page_size   = 4096 (0x1000)  // return value of getpagesize(2) 
+      .brk0        = 0x24dc000      // original program break address
+      .brk         = 0x24de000      // actual program break address
+      .total_size  = 8192 (0x2000)  // total heap size
+      .used_size   = 5273 (0x1499)  // bytes used
+      .free_size   = 2775 (0xad7)   // bytes free
+      .head_meta   = 0x24dc000      // address of first block meta
+      .meta_size   = 24 (0x18)      // size of block metadata structure
     }
     ```
   
-  * Further examples are [provided below](#examples).
+  * More examples are [provided below](#examples).
+  * I reccommend storing this in a "private" global anonymous structure, e.g., 
+  
+    ```c
+    struct {
+      size_t page_size;
+    } _heap;
+    ```
 
 * __`void csx730_pheapmap(void);`__<br>
   Prints a memory map of the heap to standard outpt. Each non-separator line in the output 
