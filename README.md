@@ -92,6 +92,7 @@ The Developer API provides three functions:
     ```
   
   * More examples are [provided below](#examples).
+  
   * I reccommend storing this in a "private" global anonymous structure, e.g., 
   
     ```c
@@ -109,7 +110,43 @@ The Developer API provides three functions:
   in the metadata for a memory block, the start of a memory block's allocated memory, and the
   end of a memory block's allocated memory. Here, allocated refers to the memory allocated
   for use by the user. If an allocated region crosses a page boundary, then that address
-  should be printed. Multiple examples are [provided below](#examples).
+  should be printed. 
+  
+  * Here is an example:
+  
+    ```
+    csx730_pheapmap()
+      ------------------
+    P 0x00000000024dc000 original program break
+      ------------------
+    P 0x00000000024dc000 used block
+      0x00000000024dc018 start (100 bytes)
+      0x00000000024dc07c end
+      ------------------
+      0x00000000024dc07c used block
+      0x00000000024dc094 start (100 bytes)
+      0x00000000024dc0f8 end
+      ------------------
+      0x00000000024dc0f8 used block
+      0x00000000024dc110 start (1025 bytes)
+      0x00000000024dc511 end
+      ------------------
+      0x00000000024dc511 free block
+      0x00000000024dc529 start (2775 bytes)
+    P 0x00000000024dd000 end
+      ------------------
+    P 0x00000000024dd000 used block
+      0x00000000024dd018 start (4048 bytes)
+      0x00000000024ddfe8 end
+      ------------------
+      0x00000000024ddfe8 free block
+    P 0x00000000024de000 start (0 bytes)
+    P 0x00000000024de000 end
+      ------------------
+    P 0x00000000024de000 program break
+    ```
+    
+  * More examples are [provided below](#examples).
   
 ### How to Manage your Heap 
 
