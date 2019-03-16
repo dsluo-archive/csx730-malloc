@@ -4,7 +4,7 @@
 > Without memory, there would be no civilization, no society, no future.
 > __--Elie Wiesel__
 
-**DUE FRI 2019-04-01 (Apr 01) @ 11:55 PM**
+**DUE MON 2019-04-01 (Apr 01) @ 11:55 PM**
 
 This repository contains the skeleton code for the `csx730-malloc` project
 assigned to the students in the Spring 2019 CSCI 4730/6730 class
