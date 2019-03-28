@@ -40,6 +40,9 @@ void * csx730_malloc(size_t size) {
         if (current->next == NULL && !current->free) {
             // we're at the last block and it's allocated. move program break
             struct meta * used = sbrk(allocate_size);
+            if (used == (void *) -1)
+                return NULL;
+
             used->free = false;
             used->size = size;
 
