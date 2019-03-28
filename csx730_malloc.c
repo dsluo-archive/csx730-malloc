@@ -72,20 +72,27 @@ void * csx730_malloc(size_t size) {
 void csx730_free(void * ptr) {
     if (ptr == NULL)
         return;
-    if (base == NULL)
-        return;
     
     struct meta * current = base;
-
-    while ((void *) (current + 1) != ptr)
+    while (current && (void *) (current + 1) != ptr)
         current = current->next;
+    if (!current) // ptr isn't something we allocated.
+        return;
 
-    struct meta * block = (struct meta *) ptr - 1;
-    block->free = true;
+    current->free = true;
 
-    if (block->next == NULL) {
-        sbrk(-(block->size + sizeof(struct meta)));
+    // extend this block if the next block is also free
+    if (current->next && current->next->free) {
+        current->size += current->next->size + sizeof(struct meta);
+        current->next = current->next->next;
     }
+
+    // this is (now) the last block; move program break if necessary
+    if (!current->next) {
+        size_t move_brk = -1 * (current->size / getpagesize()) * getpagesize();
+        current->size += move_brk;
+        sbrk(move_brk);
+}
 }
 
 void csx730_pheapstats(void) {
