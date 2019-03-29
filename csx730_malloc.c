@@ -125,46 +125,46 @@ void csx730_pheapstats(void) {
         used += current->free ? 0 : current->size;
         free += current-> free ? current->size : 0;
     }
-    printf('\t.total_size\t= %d (%x)', total, total);
-    printf('\t.used_size\t= %d (%x)', used, used);
-    printf('\t.free_size\t= %d (%x)', free, free);
-    printf('\t.head_meta\t= %p', base);
-    printf('\t.meta_size\t= %d (%x)', sizeof(struct meta), sizeof(struct meta));
-    printf('}\n');
+    printf("\t.total_size\t= %lud (%lux)", total, total);
+    printf("\t.used_size\t= %lud (%lux)", used, used);
+    printf("\t.free_size\t= %lud (%lux)", free, free);
+    printf("\t.head_meta\t= %p", base);
+    printf("\t.meta_size\t= %lud (%lux)", sizeof(struct meta), sizeof(struct meta));
+    printf("}\n");
 }
 
 void csx730_pheapmap(void) {
     init_brk0();
 
-    printf('cs730_pheapmap()\n');
-    printf('  ------------------\n');
-    printf('P %p original program break', brk0);
+    printf("cs730_pheapmap()\n");
+    printf("  ------------------\n");
+    printf("P %p original program break", brk0);
 
     struct meta * current = base;
     while (current) {
-        printf('  ------------------\n');
+        printf("  ------------------\n");
         printf(
-            '%c %p %s block\n',
-            (size_t) current % getpagesize() == 0 ? 'P' : ' ',
-            current,
-            current->free ? 'free' : 'used'
+            "%c %p %s block\n",
+            (size_t) current % getpagesize() == 0 ? (char) 'P' : (char) ' ',
+            (void *) current,
+            current->free ? "free" : "used"
         );
         printf(
-            '%c %p start (%d bytes)\n',
-            (size_t) (current + 1) % getpagesize() == 0 ? 'P' : ' ',
-            current + 1,
+            "%c %p start (%lud bytes)\n",
+            (size_t) (current + 1) % getpagesize() == 0 ? (char) 'P' : (char) ' ',
+            (void *) (current + 1),
             current->size
         );
         printf(
-            '%c %p end\n',
-            (size_t) (current + 1) % getpagesize() == 0 ? 'P' : ' ',
+            "%c %p end\n",
+            (size_t) (current + 1) % getpagesize() == 0 ? (char) 'P' : (char) ' ',
             (char *) (current + 1) + current->size
         );
     }
-    printf('  ------------------\n');
+    printf("  ------------------\n");
     printf(
-        '%c %p program break\n',
-        (size_t) (current + 1) % getpagesize() == 0 ? 'P' : ' ',
+        "%c %p program break\n",
+        (size_t) (current + 1) % getpagesize() == 0 ? (char) 'P' : (char) ' ',
         sbrk(0)
     );
 }
