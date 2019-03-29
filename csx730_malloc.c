@@ -1,9 +1,9 @@
-#define __GNU_SOURCE
+#define _DEFAULT_SOURCE
 
 #include <stddef.h>
-#include <unistd.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "csx730_malloc.h"
 
 struct meta {
