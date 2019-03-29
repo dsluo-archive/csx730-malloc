@@ -36,7 +36,7 @@ void * csx730_malloc(size_t size) {
         used->free = false;
         used->size = size;
 
-        struct meta * free = (char *) (used + 1) + size + 1;
+        struct meta * free = (struct meta *) ((char *) (used + 1) + size + 1);
         free->free = true;
         free->size = allocate_size - size - 2 * sizeof(struct meta);
         free->next = NULL;
@@ -57,7 +57,7 @@ void * csx730_malloc(size_t size) {
             used->free = false;
             used->size = size;
 
-            struct meta * free = (char *) (used + 1) + size + 1;
+            struct meta * free = (struct meta *) ((char *) (used + 1) + size + 1);
             free->free = true;
             free->size = allocate_size - size - 2 * sizeof(struct meta);
             free->next = NULL;
@@ -66,7 +66,7 @@ void * csx730_malloc(size_t size) {
             return (void *) (used + 1);
         } else {
             // we're at a block that can hold what we want allocated.
-            struct meta * free = (char *) (current + 1) + size + 1;
+            struct meta * free = (struct meta *) ((char *) (current + 1) + size + 1);
             free->free = true;
             free->size = current->size - size - sizeof(struct meta);
             free->next = current->next;
