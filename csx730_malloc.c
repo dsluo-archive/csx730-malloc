@@ -1,4 +1,5 @@
-#define _DEFAULT_SOURCE
+//#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
 #define _CS6730_SOURCE
 
 #include <stddef.h>
