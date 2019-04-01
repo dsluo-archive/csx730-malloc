@@ -16,6 +16,9 @@ struct meta {
 void * base = NULL;
 void * brk0 = NULL;
 
+/**
+ * Initializes `brk0` so that we can keep track of the initial program break.
+ */
 void init_brk0(void) {
     if (!brk0)
         brk0 = sbrk(0);
