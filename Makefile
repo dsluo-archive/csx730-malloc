@@ -5,7 +5,16 @@ RM=rm -f
 
 .PHONY: clean all test
 
-all: csx730_malloc.o
+all: driver
+
+driver: csx730_malloc.o driver.o
+	$(CC) -o $@ $^
+
+driver.o: driver.s
+	$(AS) -o $@ $<
+
+driver.s: driver.c csx730_malloc.h
+	$(CC) $(CFLAGS) -S $<
 
 csx730_malloc.o: csx730_malloc.s
 	$(AS) -o $@ $<
