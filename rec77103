@@ -1,0 +1,16 @@
+csx730-malloc/:
+total 224
+-rw-r--r-- 1 ugrad  6661 Apr  1 02:08 csx730_malloc.c
+-rw-r--r-- 1 ugrad  3247 Mar 28 12:59 csx730_malloc.h
+-rw-r--r-- 1 ugrad 14616 Apr  1 02:10 csx730_malloc.o
+-rw-r--r-- 1 ugrad 37399 Apr  1 02:10 csx730_malloc.s
+-rw-r--r-- 1 ugrad 63473 Mar 28 12:59 Doxyfile
+-rwxr-xr-x 1 ugrad 17081 Apr  1 02:10 driver
+-rw-r--r-- 1 ugrad  1635 Apr  1 02:08 driver.c
+-rw-r--r-- 1 ugrad  8336 Apr  1 02:10 driver.o
+-rw-r--r-- 1 ugrad 14991 Apr  1 02:10 driver.s
+-rw-r--r-- 1 ugrad   477 Apr  1 02:06 Makefile
+-rw-r--r-- 1 ugrad 30512 Mar 28 12:59 README.md
+-rw-r--r-- 1 ugrad     0 Apr  1 02:11 rec77103
+-rw-r--r-- 1 ugrad  1215 Apr  1 02:06 SUBMISSION.md
+/home/ugrads/dluo/csx730-malloc/:/home/work/csx730
