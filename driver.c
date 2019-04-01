@@ -66,7 +66,8 @@ int main() {
     printf("\n");
 
     printf("allocate p7 (4072 bytes)\n");
-    void * p7 = csx730_malloc(4072);
+    // void * p7 = csx730_malloc(4072);
+    csx730_malloc(4072);
     csx730_pheapmap();
     csx730_pheapstats();
 }
