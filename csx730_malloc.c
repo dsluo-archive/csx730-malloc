@@ -1,4 +1,5 @@
 #define _DEFAULT_SOURCE
+#define _CS6730_SOURCE
 
 #include <stddef.h>
 #include <stdbool.h>
@@ -194,4 +195,15 @@ void csx730_pheapmap(void) {
         (size_t) (sbrk(0)) % getpagesize() == 0 ? (char) 'P' : (char) ' ',
         sbrk(0)
     );
+}
+
+void * csx730_calloc(size_t nmemb, size_t size) {
+    void * ptr = csx730_malloc(nmemb * size);
+    if (ptr == NULL)
+        return NULL;
+    
+    for (size_t i = 0; i < nmemb * size; i++)
+        ((char *) ptr)[i] = 0;
+
+    return ptr;
 }
