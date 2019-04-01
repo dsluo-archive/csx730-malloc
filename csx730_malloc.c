@@ -179,19 +179,28 @@ void csx730_pheapmap(void) {
             (void *) current,
             current->free ? "free" : "used"
         );
+
+        void * start = (void *) (current + 1);
+        void * end = (void *) ((char *) (current + 1) + current->size);
         printf(
             "%c %p start (%lu bytes)\n",
-            (size_t) (current + 1) % getpagesize() == 0 ? (char) 'P' : (char) ' ',
-            (void *) (current + 1),
+            (size_t) start % getpagesize() == 0 ? (char) 'P' : (char) ' ',
+            start,
             current->size
         );
+        size_t page_num = (size_t) start / getpagesize() + 1;
+        for (char * address = (char *) (page_num * getpagesize()); (void *) address < end; address+=getpagesize()) {
+            printf("P %p\n", address);
+        }
         printf(
             "%c %p end\n",
-            ((size_t) (current + 1) + current->size) % getpagesize() == 0 ? (char) 'P' : (char) ' ',
-            (char *) (current + 1) + current->size
+            (size_t) end % getpagesize() == 0 ? (char) 'P' : (char) ' ',
+            end
         );
+
         current = current->next;
     }
+
     printf("  ------------------\n");
     printf(
         "%c %p program break\n",
